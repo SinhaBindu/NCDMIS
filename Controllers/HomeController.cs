@@ -16,7 +16,7 @@ namespace NCDMIS.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-        [ActionName("NCDData")]
+       // [ActionName("NCDData")]
         public JsonResult PostNCDData(List<NCDModel> model)
         {
             NCD_DBEntities db_ = new NCD_DBEntities();
