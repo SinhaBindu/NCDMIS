@@ -38,6 +38,7 @@
     <Property Name="Whether_this_person_has_visited_Sub_centre_or_Primary_Health_Centre_for_blood_sugar_screening_by_a_medical_doctor" Type="nvarchar(max)" />
     <Property Name="Whether_this_person_has_visited_Subcentre_or_Primary_Health_Centre_for_BP_screening_by_a_medical_doctor" Type="nvarchar(max)" />
     <Property Name="UniqueKey" Type="nvarchar(max)" />
+    <Property Name="SecurityToken" Type="nvarchar(max)" />
     <Property Name="IsAtcive" Type="bit" />
     <Property Name="CreatedBy" Type="nvarchar(max)" />
     <Property Name="CreatedOn" Type="datetime" />

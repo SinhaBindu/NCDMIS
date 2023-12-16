@@ -48,6 +48,7 @@ namespace NCDMIS.Models
         public string Whether_this_person_has_visited_Sub_centre_or_Primary_Health_Centre_for_blood_sugar_screening_by_a_medical_doctor { get; set; }
         public string Whether_this_person_has_visited_Subcentre_or_Primary_Health_Centre_for_BP_screening_by_a_medical_doctor { get; set; }
         public string UniqueKey { get; set; }
+        public string SecurityToken { get; set; }
         public Nullable<bool> IsAtcive { get; set; }
         public string CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedOn { get; set; }

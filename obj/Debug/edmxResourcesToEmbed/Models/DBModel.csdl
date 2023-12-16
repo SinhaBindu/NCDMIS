@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="NCD_DBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="NCD_DBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="tbl_NCD" EntityType="NCD_DBModel.tbl_NCD" />
+  </EntityContainer>
   <EntityType Name="tbl_NCD">
     <Key>
       <PropertyRef Name="ID" />
@@ -38,13 +41,11 @@
     <Property Name="Whether_this_person_has_visited_Sub_centre_or_Primary_Health_Centre_for_blood_sugar_screening_by_a_medical_doctor" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="Whether_this_person_has_visited_Subcentre_or_Primary_Health_Centre_for_BP_screening_by_a_medical_doctor" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="UniqueKey" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SecurityToken" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="IsAtcive" Type="Boolean" />
     <Property Name="CreatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="CreatedOn" Type="DateTime" Precision="3" />
     <Property Name="UpdatedBy" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="UpdatedOn" Type="DateTime" Precision="3" />
   </EntityType>
-  <EntityContainer Name="NCD_DBEntities" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="tbl_NCD" EntityType="Self.tbl_NCD" />
-  </EntityContainer>
 </Schema>
