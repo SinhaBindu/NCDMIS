@@ -1,7 +1,12 @@
 ﻿using NCDMIS.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -16,15 +21,17 @@ namespace NCDMIS.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-       // [ActionName("NCDData")]
+        // [ActionName("NCDData")]
         public JsonResult PostNCDData(List<NCDModel> model)
         {
+            var accessToken = HttpContext.Request.Headers["Authorization"];
             NCD_DBEntities db_ = new NCD_DBEntities();
             string error = "There was a communication error.";
             string Success = "Record Submitted!!";
             string AlreadyExists = "This record is Already Exists !!";
             string Rq = "All filed Required";
             string STRTokenmsg = "Security Token key not match.";
+            string strtoken = "Bearer 8FB75006-70CC-4746-A610-9EC4BB358FE8"; //"8FB75006-70CC-4746-A610-9EC4BB358FE8";
             string strMsg = "";
             if (!ModelState.IsValid)
             {
@@ -32,17 +39,18 @@ namespace NCDMIS.Controllers
             }
             try
             {
-                string strtoken = "8FB75006-70CC-4746-A610-9EC4BB358FE8";
-                List<tbl_NCD> tbllist = new List<tbl_NCD>();
-                tbl_NCD tbl;
-                if (model != null)
+                if ((accessToken).ToLower() == (strtoken).ToLower())
                 {
-                    foreach (var item in model.ToList())
+                    List<tbl_NCD> tbllist = new List<tbl_NCD>();
+                    tbl_NCD tbl;
+                    if (model != null)
                     {
-                        if (item != null)
+                        foreach (var item in model.ToList())
                         {
-                            if (item.SecurityToken.ToLower() == strtoken.ToLower())
+                            if (item != null)
                             {
+                                //if (item.SecurityToken.ToLower() == strtoken.ToLower())
+                                //{
                                 if (!db_.tbl_NCD.Any(x => x.UniqueKey == item.UniqueKey))
                                 {
                                     //if (db_.tbl_NCD.Any(x => x.UniqueKey == model.UniqueKey))
@@ -94,35 +102,78 @@ namespace NCDMIS.Controllers
                                 }
                                 else
                                 {
-                                    strMsg +=", "+ " UniqueKey " + item.UniqueKey + " " + AlreadyExists;
+                                    strMsg += ", " + " UniqueKey " + item.UniqueKey + " " + AlreadyExists;
                                 }
-                            }
-                            else
-                            {
-                                strMsg += ", " + " UniqueKey " + item.UniqueKey + " " + STRTokenmsg;
+
                             }
                         }
-                    }
-                    if (tbllist != null && tbllist.Count>0)
-                    {
-                        db.tbl_NCD.AddRange(tbllist);
-                        int res = db.SaveChanges();
-                        if (res > 0)
+                        if (tbllist != null && tbllist.Count > 0)
                         {
-                            return Json(Success + " " + strMsg, JsonRequestBehavior.AllowGet);
+                            db.tbl_NCD.AddRange(tbllist);
+                            int res = db.SaveChanges();
+                            if (res > 0)
+                            {
+                                return Json(Success + " " + strMsg, JsonRequestBehavior.AllowGet);
+                            }
                         }
-                    }
-                    else
-                    {
-                        return Json(strMsg, JsonRequestBehavior.AllowGet);
+                        else
+                        {
+                            return Json(strMsg, JsonRequestBehavior.AllowGet);
+                        }
                     }
                 }
+                else
+                {
+                    strMsg=STRTokenmsg;
+                    return Json(strMsg, JsonRequestBehavior.AllowGet);
+                }
+
             }
             catch (Exception)
             {
                 return Json(error, JsonRequestBehavior.AllowGet);
             }
             return Json(error, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<JObject> PostAsync(string token, string url, string content)
+        {
+            byte[] data = Encoding.UTF8.GetBytes(content);
+            WebRequest request = WebRequest.Create("http://localhost:44331/Home/PostAsync");
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.Headers.Add("Authorization", "Bearer " + token);
+            request.ContentLength = data.Length;
+
+            using (Stream stream = request.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+
+            try
+            {
+                WebResponse response = await request.GetResponseAsync();
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    JObject adResponse =
+                        Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(responseContent);
+                    return adResponse;
+                }
+            }
+            catch (WebException webException)
+            {
+                if (webException.Response != null)
+                {
+                    using (StreamReader reader = new StreamReader(webException.Response.GetResponseStream()))
+                    {
+                        string responseContent = reader.ReadToEnd();
+                        return Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(responseContent); ;
+                    }
+                }
+            }
+
+            return null;
         }
 
     }
