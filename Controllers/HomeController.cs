@@ -1,10 +1,13 @@
 ﻿using NCDMIS.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -22,7 +25,7 @@ namespace NCDMIS.Controllers
         [AllowAnonymous]
         [HttpPost]
         // [ActionName("NCDData")]
-        public JsonResult PostNCDData(List<NCDModel> model)
+        public async Task<JsonResult> PostNCDData(List<NCDModel> model)
         {
             var accessToken = HttpContext.Request.Headers["Authorization"];
             NCD_DBEntities db_ = new NCD_DBEntities();
@@ -93,7 +96,7 @@ namespace NCDMIS.Controllers
                                         Whether_this_person_has_visited_Sub_centre_or_Primary_Health_Centre_for_blood_sugar_screening_by_a_medical_doctor = item.Whether_this_person_has_visited_Sub_centre_or_Primary_Health_Centre_for_blood_sugar_screening_by_a_medical_doctor,
                                         Whether_this_person_has_visited_Subcentre_or_Primary_Health_Centre_for_BP_screening_by_a_medical_doctor = item.Whether_this_person_has_visited_Subcentre_or_Primary_Health_Centre_for_BP_screening_by_a_medical_doctor,
                                         UniqueKey = item.UniqueKey,
-                                        SecurityToken = item.SecurityToken,
+                                        SecurityToken = accessToken,//item.SecurityToken,
                                         IsAtcive = true,
                                         CreatedBy = item.CreatedBy,
                                         CreatedOn = DateTime.Now,
@@ -109,8 +112,8 @@ namespace NCDMIS.Controllers
                         }
                         if (tbllist != null && tbllist.Count > 0)
                         {
-                            db.tbl_NCD.AddRange(tbllist);
-                            int res = db.SaveChanges();
+                           db.tbl_NCD.AddRange(tbllist);
+                            var res =await db.SaveChangesAsync();
                             if (res > 0)
                             {
                                 return Json(Success + " " + strMsg, JsonRequestBehavior.AllowGet);

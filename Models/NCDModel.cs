@@ -78,7 +78,7 @@ namespace NCDMIS.Models
         public string Whether_this_person_has_visited_Subcentre_or_Primary_Health_Centre_for_BP_screening_by_a_medical_doctor { get; set; }
         [Required]
         public string UniqueKey { get; set; }
-        [Required]
+        //[Required]
         public string SecurityToken { get; set; }
         public Nullable<bool> IsAtcive { get; set; }
         public string CreatedBy { get; set; }
